@@ -5,5 +5,6 @@ import mate.academy.intro.model.Book;
 
 public interface BookService {
     Book save(Book book);
+
     List<Book> findAll();
 }
