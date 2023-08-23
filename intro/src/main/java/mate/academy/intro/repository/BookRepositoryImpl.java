@@ -2,6 +2,8 @@ package mate.academy.intro.repository;
 
 import jakarta.persistence.Query;
 import java.util.List;
+import java.util.Optional;
+import mate.academy.intro.exception.EntityNotFoundException;
 import mate.academy.intro.model.Book;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -31,6 +33,16 @@ public class BookRepositoryImpl implements BookRepository {
                 transaction.rollback();
             }
             throw new RuntimeException("Can't add book " + book + " to DB", e);
+        }
+    }
+
+    @Override
+    public Optional<Book> findById(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            Book book = session.find(Book.class, id);
+            return Optional.ofNullable(book);
+        } catch (Exception e) {
+            throw new RuntimeException("Can't get book with id: " + id, e);
         }
     }
 
