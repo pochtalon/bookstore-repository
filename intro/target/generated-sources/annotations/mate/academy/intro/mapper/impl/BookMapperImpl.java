@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 )
 @Component
 public class BookMapperImpl implements BookMapper {
-
     @Override
     public BookDto toDto(Book book) {
         if ( book == null ) {
