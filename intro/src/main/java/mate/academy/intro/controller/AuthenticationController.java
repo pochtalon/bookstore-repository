@@ -1,16 +1,27 @@
 package mate.academy.intro.controller;
 
-import mate.academy.intro.dto.user.UserLoginRequestDto;
-import mate.academy.intro.dto.user.UserLoginResponseDto;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import mate.academy.intro.dto.user.UserRegistrationRequestDto;
 import mate.academy.intro.dto.user.UserResponseDto;
 import mate.academy.intro.exception.RegistrationException;
+import mate.academy.intro.service.UserService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/auth")
 public class AuthenticationController {
-    public UserLoginResponseDto login(UserLoginRequestDto request){}
-    public UserResponseDto register(UserRegistrationRequestDto request) throws RegistrationException{}
+    private final UserService userService;
+
+//    public UserLoginResponseDto login(UserLoginRequestDto request){}
+
+    @PostMapping("/register")
+    public UserResponseDto register(@RequestBody @Valid UserRegistrationRequestDto request)
+            throws RegistrationException {
+        return userService.register(request);
+    }
 }

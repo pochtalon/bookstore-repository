@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Min;
 import java.math.BigDecimal;
 import lombok.Data;
 import jakarta.validation.constraints.NotNull;
+
 @Data
 public class CreateBookRequestDto {
     @NotNull
