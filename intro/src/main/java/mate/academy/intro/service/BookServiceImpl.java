@@ -2,9 +2,9 @@ package mate.academy.intro.service;
 
 import java.util.List;
 import java.util.Optional;
-import mate.academy.intro.dto.BookDto;
-import mate.academy.intro.dto.BookSearchParameters;
-import mate.academy.intro.dto.CreateBookRequestDto;
+import mate.academy.intro.dto.book.BookDto;
+import mate.academy.intro.dto.book.BookSearchParameters;
+import mate.academy.intro.dto.book.CreateBookRequestDto;
 import mate.academy.intro.exception.EntityNotFoundException;
 import mate.academy.intro.mapper.BookMapper;
 import mate.academy.intro.model.Book;
