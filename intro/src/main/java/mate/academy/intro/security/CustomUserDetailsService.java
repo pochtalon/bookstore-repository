@@ -1,4 +1,4 @@
-package mate.academy.intro.repository.security;
+package mate.academy.intro.security;
 
 import lombok.RequiredArgsConstructor;
 import mate.academy.intro.repository.user.UserRepository;

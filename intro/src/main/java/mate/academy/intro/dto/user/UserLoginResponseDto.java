@@ -1,4 +1,4 @@
 package mate.academy.intro.dto.user;
 
-public class UserLoginResponseDto {
+public record UserLoginResponseDto(String token) {
 }
