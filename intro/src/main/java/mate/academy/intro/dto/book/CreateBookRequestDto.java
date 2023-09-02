@@ -1,9 +1,9 @@
 package mate.academy.intro.dto.book;
 
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import lombok.Data;
-import jakarta.validation.constraints.NotNull;
 
 @Data
 public class CreateBookRequestDto {

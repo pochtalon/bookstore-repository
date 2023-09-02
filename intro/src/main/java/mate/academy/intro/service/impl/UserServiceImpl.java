@@ -1,4 +1,4 @@
-package mate.academy.intro.service;
+package mate.academy.intro.service.impl;
 
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +11,7 @@ import mate.academy.intro.model.Role;
 import mate.academy.intro.model.User;
 import mate.academy.intro.repository.role.RoleRepository;
 import mate.academy.intro.repository.user.UserRepository;
+import mate.academy.intro.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,14 +31,11 @@ public class UserServiceImpl implements UserService {
         }
         User user = userMapper.toModel(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-
         Role role = roleRepository.findRoleByName(Role.RoleName.ROLE_USER).orElseThrow(() ->
                 new EntityNotFoundException("Can't find role" + Role.RoleName.ROLE_USER.name())
         );
         user.setRoles(Set.of(role));
-
         User savedUser = userRepository.save(user);
-        //todo add role to User
         return userMapper.toDto(savedUser);
     }
 }

@@ -13,7 +13,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Book management", description = "Endpoints for managing books")
 @RequiredArgsConstructor
@@ -39,22 +47,28 @@ public class BookController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     @Operation(summary = "Create a new book", description = "Create a new book")
-    public BookDto createBook(Authentication authentication, @RequestBody @Valid CreateBookRequestDto bookDto) {
+    public BookDto createBook(Authentication authentication,
+            @RequestBody @Valid CreateBookRequestDto bookDto) {
         return bookService.save(bookDto);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a book by ID", description = "Delete a book by ID from DB, if present in DB")
-    public void delete(Authentication authentication, @PathVariable Long id) {
+    @Operation(summary = "Delete a book by ID",
+            description = "Delete a book by ID from DB, if present in DB")
+    public void delete(Authentication authentication,
+                       @PathVariable Long id) {
         bookService.deleteById(id);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Update a book by ID", description = "Update a book by ID")
-    public BookDto updateBook(Authentication authentication, @PathVariable Long id, @RequestBody @Valid CreateBookRequestDto bookDto) {
+    public BookDto updateBook(
+            Authentication authentication,
+            @PathVariable Long id,
+            @RequestBody @Valid CreateBookRequestDto bookDto) {
         return bookService.update(id, bookDto);
     }
 
@@ -62,7 +76,8 @@ public class BookController {
     @GetMapping("/search")
     @Operation(summary = "Update a book by ID",
             description = "Update a book by ID if present in DB")
-    public List<BookDto> search(Authentication authentication, BookSearchParameters searchParameters) {
+    public List<BookDto> search(Authentication authentication,
+                                BookSearchParameters searchParameters) {
         return bookService.search(searchParameters);
     }
 }
