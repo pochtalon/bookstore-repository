@@ -1,9 +1,20 @@
 package mate.academy.intro.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import mate.academy.intro.dto.book.BookDto;
 import mate.academy.intro.dto.category.CategoryDto;
+import mate.academy.intro.model.Category;
+import mate.academy.intro.service.BookService;
 import mate.academy.intro.service.CategoryService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,11 +23,41 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/categories")
 public class CategoryController {
     private final CategoryService categoryService;
+    private final BookService bookService;
 
-    public CategoryDto createCategory(CategoryDto categoryDto);
-    public List getAll();
-    public CategoryDto getCategoryById(Long id);
-    public CategoryDto updateCategory(Long id, CategoryDto categoryDto);
-    public void deleteCategory(Long id);
-    public List getBooksByCategoryId(Long id) //(endpoint: "/{id}/books");
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping
+    public CategoryDto createCategory(Authentication authentication, @RequestBody @Valid CategoryDto categoryDto) {
+        return categoryService.save(categoryDto);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @GetMapping
+    public List<CategoryDto> getAll(Authentication authentication) {
+        return categoryService.findAll();
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @GetMapping("/{id}")
+    public CategoryDto getCategoryById(Authentication authentication, Long id) {
+        return categoryService.getById(id);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PutMapping("/{id}")
+    public CategoryDto updateCategory(Authentication authentication, Long id, @RequestBody @Valid CategoryDto categoryDto) {
+        return categoryService.update(id, categoryDto);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/{id}")
+    public void deleteCategory(Authentication authentication, Long id) {
+        categoryService.deleteById(id);
+    }
+
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @GetMapping("/{id}/books")
+    public List<BookDto> getBooksByCategoryId(Authentication authentication, Long id) {
+        return bookService.findAllByCategoryId(id);
+    }
 }

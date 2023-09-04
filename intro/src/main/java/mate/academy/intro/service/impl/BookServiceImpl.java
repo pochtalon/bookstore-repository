@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import mate.academy.intro.dto.book.BookDto;
+import mate.academy.intro.dto.book.BookDtoWithoutCategoriesIds;
 import mate.academy.intro.dto.book.BookSearchParameters;
 import mate.academy.intro.dto.book.CreateBookRequestDto;
 import mate.academy.intro.exception.EntityNotFoundException;
@@ -67,5 +68,10 @@ public class BookServiceImpl implements BookService {
             return bookMapper.toDto(book);
         }
         throw new EntityNotFoundException("The book with id " + id + " was not found");
+    }
+
+    @Override
+    public List<BookDtoWithoutCategoriesIds> findAllByCategoryId(Long categoryId) {
+        return bookRepository.getAllByCategoriesId(categoryId).stream().map(bookMapper::toDtoWithoutCategories).toList();
     }
 }
