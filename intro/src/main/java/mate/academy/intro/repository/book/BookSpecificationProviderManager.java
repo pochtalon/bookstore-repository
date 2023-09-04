@@ -4,14 +4,14 @@ import java.util.List;
 import mate.academy.intro.model.Book;
 import mate.academy.intro.repository.SpecificationProvider;
 import mate.academy.intro.repository.SpecificationProviderManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class BookSpecificationProviderManager implements SpecificationProviderManager<Book> {
     private final List<SpecificationProvider<Book>> bookSpecificationProvider;
 
-    public BookSpecificationProviderManager(List<SpecificationProvider<Book>> bookSpecificationProvider) {
+    public BookSpecificationProviderManager(
+            List<SpecificationProvider<Book>> bookSpecificationProvider) {
         this.bookSpecificationProvider = bookSpecificationProvider;
     }
 
@@ -20,7 +20,7 @@ public class BookSpecificationProviderManager implements SpecificationProviderMa
         return bookSpecificationProvider.stream()
                 .filter(b -> b.getKey().equals(key))
                 .findFirst()
-                .orElseThrow(() -> new  RuntimeException("Cant find corect cpec provider for key "
+                .orElseThrow(() -> new RuntimeException("Cant find corect cpec provider for key "
                         + key));
     }
 }

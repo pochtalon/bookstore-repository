@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-admin
+      author: mateacademy-pochtalon
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column: {name: email, value: "admin_first@mail.com"}
+              - column: {name: password, value: "$2a$10$pVfjvP8petI6Q.locgLd4ua.JSf.evDRNT0FaeaWtW0eesn9Qk37W"}
+              - column: {name: first_name, value: "Govard"}
+              - column: {name: last_name, value: "Lovecraft"}
+        - insert:
+            tableName: users_roles
+            columns:
+              - column: { name: user_id, value: "1" }
+              - column: { name: role_id, value: "1" }
+        - insert:
+            tableName: users_roles
+            columns:
+              - column: { name: user_id, value: "1" }
+              - column: { name: role_id, value: "2" }
