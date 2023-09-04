@@ -1,5 +1,6 @@
 package mate.academy.intro.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
+    @Operation(summary = "Create a new category", description = "Create a new category")
     public CategoryDto createCategory(Authentication authentication,
                                       @RequestBody @Valid CategoryDto categoryDto) {
         return categoryService.save(categoryDto);
@@ -35,18 +37,22 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @GetMapping
+    @Operation(summary = "Get all categories",
+            description = "Get a list of all available categories")
     public List<CategoryDto> getAll(Authentication authentication, Pageable pageable) {
         return categoryService.findAll(pageable);
     }
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/{id}")
+    @Operation(summary = "Get category by id", description = "Get category by id")
     public CategoryDto getCategoryById(Authentication authentication, @PathVariable Long id) {
         return categoryService.getById(id);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
+    @Operation(summary = "Update a category by ID", description = "Update a category by ID")
     public CategoryDto updateCategory(
             Authentication authentication,
             @PathVariable Long id,
@@ -56,12 +62,16 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a category by ID",
+            description = "Make soft deleting a category by ID")
     public void deleteCategory(Authentication authentication, @PathVariable Long id) {
         categoryService.deleteById(id);
     }
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/{id}/books")
+    @Operation(summary = "Get all books category id",
+            description = "Get all books category id")
     public List<BookDtoWithoutCategoriesIds> getBooksByCategoryId(
             Authentication authentication, @PathVariable Long id) {
         return bookService.findAllByCategoryId(id);
