@@ -20,19 +20,8 @@ public interface ShoppingCartMapper {
             @MappingTarget ShoppingCartResponseDto shoppingCartResponseDto,
             ShoppingCart shoppingCart
     ) {
-        CartItemMapper cartItemMapper = new CartItemMapper() {
-            @Override
-            public CartItemDto toDto(CartItem cartItem) {
-                CartItemDto cartItemDto = new CartItemDto();
-                cartItemDto.setId(cartItem.getId());
-                cartItemDto.setBookId(cartItem.getBook().getId());
-                cartItemDto.setBookTitle(cartItem.getBook().getTitle());
-                cartItemDto.setQuantity(cartItem.getQuantity());
-                return cartItemDto;
-            }
-        };
         shoppingCartResponseDto.setCartItems(shoppingCart.getCartItems().stream()
-                .map(cartItemMapper::toDto)
+                .map(this::mappingSetItems)
                 .collect(Collectors.toSet()));
     }
 
@@ -42,5 +31,14 @@ public interface ShoppingCartMapper {
             ShoppingCart shoppingCart
     ) {
         shoppingCartResponseDto.setUserId(shoppingCart.getUser().getId());
+    }
+
+    private CartItemDto mappingSetItems(CartItem cartItem) {
+        CartItemDto cartItemDto = new CartItemDto();
+        cartItemDto.setId(cartItem.getId());
+        cartItemDto.setBookId(cartItem.getBook().getId());
+        cartItemDto.setBookTitle(cartItem.getBook().getTitle());
+        cartItemDto.setQuantity(cartItem.getQuantity());
+        return cartItemDto;
     }
 }

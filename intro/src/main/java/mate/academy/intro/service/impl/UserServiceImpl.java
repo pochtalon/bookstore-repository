@@ -11,7 +11,7 @@ import mate.academy.intro.model.Role;
 import mate.academy.intro.model.ShoppingCart;
 import mate.academy.intro.model.User;
 import mate.academy.intro.repository.role.RoleRepository;
-import mate.academy.intro.repository.shoppingCart.ShoppingCartRepository;
+import mate.academy.intro.repository.shoppingcart.ShoppingCartRepository;
 import mate.academy.intro.repository.user.UserRepository;
 import mate.academy.intro.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,6 +44,4 @@ public class UserServiceImpl implements UserService {
         shoppingCartRepository.save(shoppingCart);
         return userMapper.toDto(savedUser);
     }
-
-
 }
