@@ -25,7 +25,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: quantity
-                  type: bigint
+                  type: integer
                   constraints:
                     nullable: false
               - column:
