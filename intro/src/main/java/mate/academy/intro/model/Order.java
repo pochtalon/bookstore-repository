@@ -35,7 +35,7 @@ public class Order {
     private User user;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Status status = Status.PENDING;
+    private Status status;
     @Column(nullable = false)
     private BigDecimal total;
     @Column(name = "order_date", nullable = false)
