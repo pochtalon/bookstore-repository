@@ -30,7 +30,7 @@ public class ShoppingCart {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shoppingCart")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "shoppingCart")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<CartItem> cartItems = new HashSet<>();

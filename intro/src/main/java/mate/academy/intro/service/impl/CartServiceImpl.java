@@ -56,18 +56,13 @@ public class CartServiceImpl implements CartService {
     }
 
     private CartItem getItemFromCart(Long id, Long cartItemId) {
-        doesItemBelongToCart(id, cartItemId);
-        return cartItemRepository.findById(cartItemId).orElseThrow(() ->
-                new EntityNotFoundException("Can't find cart item with id " + cartItemId));
-    }
-
-    private boolean doesItemBelongToCart(Long id, Long cartItemId) {
         ShoppingCart shoppingCart = findCartByUserId(id);
-        if (!shoppingCart.getId().equals(cartItemId)) {
-            throw new RuntimeException("Can't find cart item with id "
-                    + cartItemId + " in your cart");
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(() ->
+                new EntityNotFoundException("Can't find cart item with id " + cartItemId));
+        if (shoppingCart.equals(cartItem.getShoppingCart())) {
+            return cartItem;
         }
-        return true;
+        throw new RuntimeException("Can't find cart item with id " + cartItemId + " in your cart");
     }
 
     private ShoppingCart findCartByUserId(Long id) {
