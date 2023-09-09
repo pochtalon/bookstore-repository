@@ -8,6 +8,7 @@ import mate.academy.intro.model.Book;
 import mate.academy.intro.model.Category;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
@@ -15,6 +16,7 @@ import org.mapstruct.Named;
 public interface BookMapper {
     BookDto toDto(Book book);
 
+    @Mapping(target = "categories", ignore = true)
     Book toModel(CreateBookRequestDto requestDto);
 
     BookDtoWithoutCategoriesIds toDtoWithoutCategories(Book book);

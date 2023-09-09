@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-shopping_carts-table
+      author: mateacademy-pochtalon
+      changes:
+        - createTable:
+            tableName: shopping_carts
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: shoppingcart_user_id
+                    referencedTableName: users
+                    referencedColumnNames: id
+              - column:
+                  name: is_deleted
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
