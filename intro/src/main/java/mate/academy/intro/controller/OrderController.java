@@ -1,5 +1,6 @@
 package mate.academy.intro.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -29,6 +30,8 @@ public class OrderController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
+    @Operation(summary = "Create order",
+            description = "Create order, based on items in shopping cart")
     public OrderDto createOrder(Authentication authentication,
                                 @RequestBody @Valid AddressRequestDto requestDto) {
         User user = (User) authentication.getPrincipal();
@@ -37,6 +40,8 @@ public class OrderController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping
+    @Operation(summary = "Get orders history",
+            description = "get all orders for current user")
     public List<OrderDto> getAllOrders(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return orderService.findAllOrders(user);
@@ -44,6 +49,8 @@ public class OrderController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/{id}")
+    @Operation(summary = "Update order status",
+            description = "Update order status")
     public OrderDto updateOrderStatus(Authentication authentication,
                                       @PathVariable Long id,
                                       @RequestBody @Valid StatusRequestDto statusRequest) {
@@ -52,6 +59,8 @@ public class OrderController {
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/{orderId}/items")
+    @Operation(summary = "Get order by id",
+            description = "Get order by id, if it belongs for current user")
     public List<OrderItemDto> getAllItemsFromOrder(Authentication authentication,
                                                    @PathVariable Long orderId
     ) {
@@ -61,6 +70,8 @@ public class OrderController {
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/{orderId}/items/{itemId}")
+    @Operation(summary = "Get special item from order by id",
+            description = "Get item from order, if it belongs for current user")
     public OrderItemDto getItemFromOrder(Authentication authentication,
                                          @PathVariable Long orderId,
                                          @PathVariable Long itemId
