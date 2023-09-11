@@ -18,6 +18,7 @@ import mate.academy.intro.model.OrderItem;
 import mate.academy.intro.model.Role;
 import mate.academy.intro.model.ShoppingCart;
 import mate.academy.intro.model.User;
+import mate.academy.intro.repository.cartitem.CartItemRepository;
 import mate.academy.intro.repository.order.OrderRepository;
 import mate.academy.intro.repository.orderitem.OrderItemRepository;
 import mate.academy.intro.repository.role.RoleRepository;
@@ -32,6 +33,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final ShoppingCartRepository cartRepository;
     private final RoleRepository roleRepository;
+    private final CartItemRepository cartItemRepository;
     private final OrderMapper orderMapper;
     private final OrderItemMapper orderItemMapper;
 
@@ -46,7 +48,6 @@ public class OrderServiceImpl implements OrderService {
         }
         savedOrder.setTotal(total);
         orderRepository.save(savedOrder);
-        //todo clear the cart from cartItems
         return orderMapper.toDto(savedOrder);
     }
 
@@ -105,12 +106,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Set<OrderItem> getOrderItemsFromCart(Long id, Order order) {
-        ShoppingCart shoppingCartByUserId = getShoppingCartById(id);
-        return shoppingCartByUserId.getCartItems().stream()
+        ShoppingCart shoppingCart = getShoppingCartById(id);
+        Set<OrderItem> orderItems = shoppingCart.getCartItems().stream()
                 .map(this::convertToOrderItem)
                 .peek(orderItem -> orderItem.setOrder(order))
                 .map(orderItemRepository::save)
                 .collect(Collectors.toSet());
+        cartItemRepository.deleteAll(shoppingCart.getCartItems());
+        return orderItems;
     }
 
     private Order getOrderById(Long id) {
