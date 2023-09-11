@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import mate.academy.intro.dto.order.OrderDto;
 import mate.academy.intro.exception.EntityNotFoundException;
+import mate.academy.intro.mapper.OrderMapper;
 import mate.academy.intro.model.CartItem;
 import mate.academy.intro.model.Order;
 import mate.academy.intro.model.OrderItem;
@@ -25,12 +26,20 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final ShoppingCartRepository cartRepository;
+    private final OrderMapper orderMapper;
 
     @Override
     public OrderDto createOrder(User user, String shippingAddress) {
         Order order = initOrder(user, shippingAddress);
-
-        return null;
+        Order savedOrder = orderRepository.save(order);
+        savedOrder.setOrderItems(getOrderItemsFromCart(user.getId(), order));
+        BigDecimal total = BigDecimal.ZERO;
+        for (OrderItem orderItem : savedOrder.getOrderItems()) {
+            total = total.add(orderItem.getPrice());
+        }
+        savedOrder.setTotal(total);
+        orderRepository.save(savedOrder);
+        return orderMapper.toDto(savedOrder);
     }
 
     private Order initOrder(User user, String address) {
@@ -39,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(Order.Status.PENDING);
         order.setShippingAddress(address);
-        order.setOrderItems(getOrderItemsFromCart(user.getId(), order));
+        order.setTotal(BigDecimal.ZERO);
         return order;
     }
 
@@ -48,13 +57,13 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() ->
                         new EntityNotFoundException("Can't find cart for user with id " + id));
         return shoppingCartByUserId.getCartItems().stream()
-                .map(this::getOrderItem)
+                .map(this::convertToOrderItem)
                 .peek(orderItem -> orderItem.setOrder(order))
                 .map(orderItemRepository::save)
                 .collect(Collectors.toSet());
     }
-//todo add order to orderItem before adding to db, check it
-    private OrderItem getOrderItem(CartItem cartItem) {
+
+    private OrderItem convertToOrderItem(CartItem cartItem) {
         OrderItem orderItem = new OrderItem();
         orderItem.setBook(cartItem.getBook());
         orderItem.setQuantity(cartItem.getQuantity());
