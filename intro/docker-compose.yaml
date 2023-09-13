@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql
+    restart: always
+    ports:
+      - "3308:3307"
+    environment:
+      MYSQL_DB: books
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 00000
+    healthcheck:
+      test: ["CDM_SHELL", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
