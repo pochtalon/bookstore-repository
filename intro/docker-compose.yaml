@@ -5,7 +5,8 @@ services:
     platform: linux/arm64
     image: postgres
     restart: unless-stopped
-    env_file: ./.env
+    env_file:
+      - ./.env
     environment:
       - POSTGRES_DB=$POSTGRES_DATABASE
       - POSTGRES_USER=$POSTGRES_USER
@@ -21,9 +22,10 @@ services:
     depends_on:
       - postgresdb
     restart: on-failure
-    image: posts-service
+    image: book-service
     build: .
-    env_file: ./.env
+    env_file:
+      - ./.env
     ports:
       - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
       - $DEBUG_PORT:$DEBUG_PORT
