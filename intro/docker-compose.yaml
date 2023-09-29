@@ -2,11 +2,11 @@ version: "3.8"
 
 services:
   postgresdb:
+#    container_name: postgres_db
     platform: linux/arm64
     image: postgres
     restart: unless-stopped
-    env_file:
-      - ./.env
+    env_file: ./.env
     environment:
       - POSTGRES_DB=$POSTGRES_DATABASE
       - POSTGRES_USER=$POSTGRES_USER
@@ -19,13 +19,13 @@ services:
       timeout: 30s
       retries: 3
   app:
+#    container_name: book_store_back
     depends_on:
       - postgresdb
     restart: on-failure
     image: book-service
     build: .
-    env_file:
-      - ./.env
+    env_file: ./.env
     ports:
       - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
       - $DEBUG_PORT:$DEBUG_PORT
