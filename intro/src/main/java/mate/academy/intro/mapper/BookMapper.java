@@ -11,6 +11,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.stream.Collectors;
+
 @Mapper(config = MapperConfig.class)
 public interface BookMapper {
     BookDto toDto(Book book);
@@ -24,6 +26,6 @@ public interface BookMapper {
     default void setCategoryIds(@MappingTarget BookDto bookDto, Book book) {
         bookDto.setCategoriesId(book.getCategories().stream()
                 .map(Category::getId)
-                .toList());
+                .collect(Collectors.toSet()));
     }
 }

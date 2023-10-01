@@ -32,8 +32,9 @@ public class BookServiceImpl implements BookService {
         Book book = bookMapper.toModel(requestDto);
         if (requestDto.getCategories() != null && requestDto.getCategories().size() > 0) {
             for (Long categoryId : requestDto.getCategories()) {
-                Optional<Category> category = categoryRepository.findById(categoryId);
-                category.ifPresent(value -> book.getCategories().add(value));
+                Category category = categoryRepository.findById(categoryId).orElseThrow(() ->
+                        new EntityNotFoundException("Can't find category with id " + categoryId));
+                book.getCategories().add(category);
             }
         }
         book.setId(bookRepository.save(book).getId());
@@ -42,8 +43,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto findById(Long id) {
-        Optional<Book> optionalBook = bookRepository.findById(id);
-        return bookMapper.toDto(optionalBook.orElseThrow(() ->
+        return bookMapper.toDto(bookRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Can't get book with id: " + id)));
     }
 
