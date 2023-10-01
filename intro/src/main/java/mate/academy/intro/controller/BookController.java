@@ -74,8 +74,8 @@ public class BookController {
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/search")
-    @Operation(summary = "Update a book by ID",
-            description = "Update a book by ID if present in DB")
+    @Operation(summary = "Search a book by parameters",
+            description = "Search a book by parameters if present in DB")
     public List<BookDto> search(Authentication authentication,
                                 BookSearchParameters searchParameters) {
         return bookService.search(searchParameters);

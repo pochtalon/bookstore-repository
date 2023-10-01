@@ -1,5 +1,6 @@
 package mate.academy.intro.mapper;
 
+import java.util.stream.Collectors;
 import mate.academy.intro.config.MapperConfig;
 import mate.academy.intro.dto.book.BookDto;
 import mate.academy.intro.dto.book.BookDtoWithoutCategoriesIds;
@@ -10,8 +11,6 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-import java.util.stream.Collectors;
 
 @Mapper(config = MapperConfig.class)
 public interface BookMapper {

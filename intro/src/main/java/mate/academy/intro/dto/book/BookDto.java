@@ -2,7 +2,6 @@ package mate.academy.intro.dto.book;
 
 import java.math.BigDecimal;
 import java.util.Set;
-
 import lombok.Data;
 import lombok.experimental.Accessors;
 
