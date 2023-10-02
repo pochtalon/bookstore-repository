@@ -240,7 +240,7 @@ class BookControllerTest {
         BookDto[] booksBefore = objectMapper
                 .readValue(beforeDeleting.getResponse().getContentAsByteArray(), BookDto[].class);
 
-        MvcResult resultFirstId = mockMvc.perform(delete("/books/100")
+        MvcResult result = mockMvc.perform(delete("/books/100")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent())
                 .andReturn();

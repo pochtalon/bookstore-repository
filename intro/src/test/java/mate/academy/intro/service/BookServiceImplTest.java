@@ -349,6 +349,7 @@ class BookServiceImplTest {
         assertEquals(expected, actual);
     }
 
+    //todo: remake method, works with wrong id
     @Test
     @DisplayName("Find all books by valid category id")
     public void findAllByCategoryId_ValidId_ReturnListDto() {
