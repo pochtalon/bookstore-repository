@@ -43,8 +43,8 @@ class CategoryControllerTest {
     protected static MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    private static List<CategoryDto> categoriesCatalog = new ArrayList<>();
-    private static List<BookDto> booksCatalog = new ArrayList<>();
+    private static final List<CategoryDto> categoriesCatalog = new ArrayList<>();
+    private static final List<BookDto> booksCatalog = new ArrayList<>();
 
     @BeforeAll
     static void beforeAll(

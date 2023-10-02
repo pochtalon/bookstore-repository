@@ -51,7 +51,7 @@ class BookControllerTest {
     private static final BigDecimal PRICE = BigDecimal.valueOf(148.8);
     private static final String DESCRIPTION = "Early modern political philosophy";
     private static final String COVER_IMAGE = "Some printmaking";
-    private static List<BookDto> booksCatalog = new ArrayList<>();
+    private static final List<BookDto> booksCatalog = new ArrayList<>();
 
     @BeforeAll
     static void beforeAll(
