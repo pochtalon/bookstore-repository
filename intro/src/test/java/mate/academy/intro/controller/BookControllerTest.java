@@ -340,7 +340,6 @@ class BookControllerTest {
                 .andReturn();
         BookDto[] booksTitle = objectMapper
                 .readValue(resultTitles.getResponse().getContentAsByteArray(), BookDto[].class);
-        System.out.println(Arrays.toString(booksTitle));
         Assertions.assertEquals(1, booksTitle.length);
         Assertions.assertEquals(booksCatalog.get(1), booksTitle[0]);
 
@@ -350,9 +349,43 @@ class BookControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
         BookDto[] booksAuthor = objectMapper
-                .readValue(resultTitles.getResponse().getContentAsByteArray(), BookDto[].class);
-        Assertions.assertEquals(2, booksTitle.length);
+                .readValue(resultAuthors.getResponse().getContentAsByteArray(), BookDto[].class);
+        Assertions.assertEquals(2, booksAuthor.length);
         Assertions.assertEquals(booksCatalog.get(0), booksAuthor[0]);
         Assertions.assertEquals(booksCatalog.get(2), booksAuthor[1]);
+
+        MvcResult resultAuthorsAndTitle = mockMvc.perform(get("/books/search")
+                        .param("author", "Umberto Eco", "Howard Lovecraft")
+                        .param("title", "Call of Cthulhu")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+        BookDto[] booksAuthorAndTitle = objectMapper
+                .readValue(resultAuthorsAndTitle.getResponse().getContentAsByteArray(), BookDto[].class);
+        Assertions.assertEquals(1, booksAuthorAndTitle.length);
+        Assertions.assertEquals(booksCatalog.get(0), booksAuthorAndTitle[0]);
+    }
+
+    @WithMockUser
+    @Test
+    @DisplayName("Search book by invalid parameters")
+    public void search_InvalidParameters_ReturnEmptyList() throws Exception {
+        MvcResult resultTitle = mockMvc.perform(get("/books/search")
+                        .param("title", "invalid")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+        BookDto[] booksTitle = objectMapper
+                .readValue(resultTitle.getResponse().getContentAsByteArray(), BookDto[].class);
+        Assertions.assertEquals(0, booksTitle.length);
+
+        MvcResult resultAuthor = mockMvc.perform(get("/books/search")
+                        .param("title", "invalid")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+        BookDto[] booksAuthor = objectMapper
+                .readValue(resultAuthor.getResponse().getContentAsByteArray(), BookDto[].class);
+        Assertions.assertEquals(0, booksAuthor.length);
     }
 }

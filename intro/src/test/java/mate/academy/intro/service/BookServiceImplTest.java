@@ -277,7 +277,7 @@ class BookServiceImplTest {
         when(bookRepository.findAll(specification)).thenReturn(List.of(book));
         when(bookMapper.toDto(book)).thenReturn(bookDto);
 
-        List<BookDto> bookDtos = bookService.search(searchParameters);
+        List<BookDto> bookDtos = bookService.search(List.of(TITLE), List.of(AUTHOR));
         assertThat(bookDtos).hasSize(1);
         assertEquals(bookDto, bookDtos.get(0));
     }
@@ -293,7 +293,7 @@ class BookServiceImplTest {
         when(builder.build(searchParameters)).thenReturn(specification);
         when(bookRepository.findAll(specification)).thenReturn(Collections.emptyList());
 
-        List<BookDto> bookDtos = bookService.search(searchParameters);
+        List<BookDto> bookDtos = bookService.search(List.of("invalid"), List.of("invalid"));
         assertThat(bookDtos).hasSize(0);
     }
 
