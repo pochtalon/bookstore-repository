@@ -1,14 +1,10 @@
 package mate.academy.intro.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
-import liquibase.pro.packaged.A;
 import lombok.SneakyThrows;
 import mate.academy.intro.dto.book.BookDto;
-import mate.academy.intro.dto.book.BookSearchParameters;
 import mate.academy.intro.dto.book.CreateBookRequestDto;
-import mate.academy.intro.exception.EntityNotFoundException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
