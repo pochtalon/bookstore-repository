@@ -349,61 +349,77 @@ class BookServiceImplTest {
         assertEquals(expected, actual);
     }
 
-    //todo: remake method, works with wrong id
     @Test
     @DisplayName("Find all books by valid category id")
     public void findAllByCategoryId_ValidId_ReturnListDto() {
-        Long firstId = 1L;
-        Long secondId = 2L;
-        Book firstBook = new Book()
-                .setId(firstId)
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
-        Book secondBook = new Book()
-                .setId(secondId)
-                .setTitle("Beyond Good and Evil")
-                .setAuthor("Friedrich Nietzsche")
-                .setIsbn("0-486-29868-X")
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
-        BookDtoWithoutCategoriesIds firstDto = new BookDtoWithoutCategoriesIds()
-                .setId(firstId)
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
-        BookDtoWithoutCategoriesIds secondDto = new BookDtoWithoutCategoriesIds()
-                .setId(firstId)
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
+        Long horrorCategoryId = 1L;
+        Long detectiveCategoryId = 2L;
+        Category horror = new Category()
+                .setId(horrorCategoryId)
+                .setName("Horror")
+                .setDescription("Something scary");
+        Category detective = new Category()
+                .setId(detectiveCategoryId)
+                .setName("Detective")
+                .setDescription("Something enigmatic");
+        Book cthulhu = new Book()
+                .setId(1L)
+                .setTitle("Call of Cthulhu")
+                .setAuthor("Howard Lovecraft")
+                .setIsbn("978-966-2355-82-6")
+                .setPrice(BigDecimal.valueOf(192.8))
+                .setDescription("Book about Cthulhu")
+                .setCoverImage("Cthulhu_cover")
+                .setCategories(Set.of(horror));
+        Book blackCat = new Book()
+                .setId(2L)
+                .setTitle("The Black Cat")
+                .setAuthor("Edgar Poe")
+                .setIsbn("978-0-8154-1038-6")
+                .setPrice(BigDecimal.valueOf(184.3))
+                .setDescription("Scary black cat")
+                .setCoverImage("Cat_cover")
+                .setCategories(Set.of(horror, detective));
+        BookDtoWithoutCategoriesIds cthulhuDto = new BookDtoWithoutCategoriesIds()
+                .setId(1L)
+                .setTitle("Call of Cthulhu")
+                .setAuthor("Howard Lovecraft")
+                .setIsbn("978-966-2355-82-6")
+                .setPrice(BigDecimal.valueOf(192.8))
+                .setDescription("Book about Cthulhu")
+                .setCoverImage("Cthulhu_cover");
+        BookDtoWithoutCategoriesIds blackCatDto = new BookDtoWithoutCategoriesIds()
+                .setId(2L)
+                .setTitle("The Black Cat")
+                .setAuthor("Edgar Poe")
+                .setIsbn("978-0-8154-1038-6")
+                .setPrice(BigDecimal.valueOf(184.3))
+                .setDescription("Scary black cat")
+                .setCoverImage("Cat_cover");
 
-        when(bookRepository.getAllByCategoriesId(1L)).thenReturn(List.of(firstBook, secondBook));
-        when(bookMapper.toDtoWithoutCategories(firstBook)).thenReturn(firstDto);
-        when(bookMapper.toDtoWithoutCategories(secondBook)).thenReturn(secondDto);
+        when(bookRepository.getAllByCategoriesId(horrorCategoryId)).thenReturn(List.of(cthulhu, blackCat));
+        when(bookMapper.toDtoWithoutCategories(cthulhu)).thenReturn(cthulhuDto);
+        when(bookMapper.toDtoWithoutCategories(blackCat)).thenReturn(blackCatDto);
 
-        List<BookDtoWithoutCategoriesIds> byCategoryId = bookService.findAllByCategoryId(1L);
-        assertThat(byCategoryId).hasSize(2);
-        assertEquals(firstDto, byCategoryId.get(0));
-        assertEquals(secondDto, byCategoryId.get(1));
+        List<BookDtoWithoutCategoriesIds> byHorrorId = bookService.findAllByCategoryId(horrorCategoryId);
+        assertThat(byHorrorId).hasSize(2);
+        assertEquals(cthulhuDto, byHorrorId.get(0));
+        assertEquals(blackCatDto, byHorrorId.get(1));
+
+        when(bookRepository.getAllByCategoriesId(detectiveCategoryId)).thenReturn(List.of(blackCat));
+        when(bookMapper.toDtoWithoutCategories(blackCat)).thenReturn(blackCatDto);
+
+        List<BookDtoWithoutCategoriesIds> byDetectiveId = bookService.findAllByCategoryId(detectiveCategoryId);
+        assertThat(byDetectiveId).hasSize(1);
+        assertEquals(blackCatDto, byDetectiveId.get(0));
     }
 
     @Test
     @DisplayName("Find all books by invalid category id")
     public void findAllByCategoryId_InvalidId_ReturnEmptyList() {
-        when(bookRepository.getAllByCategoriesId(1L)).thenReturn(Collections.emptyList());
+        when(bookRepository.getAllByCategoriesId(100L)).thenReturn(Collections.emptyList());
 
-        List<BookDtoWithoutCategoriesIds> byCategoryId = bookService.findAllByCategoryId(1L);
+        List<BookDtoWithoutCategoriesIds> byCategoryId = bookService.findAllByCategoryId(100L);
         assertThat(byCategoryId).hasSize(0);
     }
 }
