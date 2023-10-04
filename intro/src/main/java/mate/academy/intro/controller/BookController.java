@@ -3,10 +3,10 @@ package mate.academy.intro.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mate.academy.intro.dto.book.BookDto;
-import mate.academy.intro.dto.book.BookSearchParameters;
 import mate.academy.intro.dto.book.CreateBookRequestDto;
 import mate.academy.intro.service.BookService;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -74,10 +75,14 @@ public class BookController {
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @GetMapping("/search")
-    @Operation(summary = "Update a book by ID",
-            description = "Update a book by ID if present in DB")
+    @Operation(summary = "Search a book by parameters",
+            description = "Search a book by parameters if present in DB")
     public List<BookDto> search(Authentication authentication,
-                                BookSearchParameters searchParameters) {
-        return bookService.search(searchParameters);
+                                @RequestParam(required = false) List<String> title,
+                                @RequestParam(required = false) List<String> author) {
+        System.out.println(title + " " + author);
+        List<String> titles = title != null ? title : Collections.emptyList();
+        List<String> authors = author != null ? author : Collections.emptyList();
+        return bookService.search(titles, authors);
     }
 }
