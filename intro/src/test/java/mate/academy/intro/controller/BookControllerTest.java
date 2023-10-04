@@ -128,20 +128,8 @@ class BookControllerTest {
     )
     @DisplayName("Create a new book")
     public void createBook_ValidRequestDto_Success() throws Exception {
-        CreateBookRequestDto requestDto = new CreateBookRequestDto()
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
-        BookDto expected = new BookDto()
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
+        CreateBookRequestDto requestDto = getBookRequestDto();
+        BookDto expected = getBookDto();
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
         MvcResult result = mockMvc.perform(post("/books")
@@ -268,14 +256,7 @@ class BookControllerTest {
     @DisplayName("Update book by valid id")
     public void update_IdAndRequestDto_UpdatedBook() throws Exception {
         Long id = 4L;
-        CreateBookRequestDto requestDto = new CreateBookRequestDto()
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE)
-                .setCategories(new HashSet<>());
+        CreateBookRequestDto requestDto = getBookRequestDto();
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
         MvcResult result = mockMvc.perform(put("/books/" + id)
@@ -284,15 +265,8 @@ class BookControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        BookDto expected = new BookDto()
-                .setId(id)
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE)
-                .setCategoriesId(new HashSet<>());
+        BookDto expected = getBookDto();
+        expected.setId(id);
         BookDto actual = objectMapper.readValue(result.getResponse().getContentAsByteArray(), BookDto.class);
 
         Assertions.assertEquals(expected, actual);
@@ -303,14 +277,7 @@ class BookControllerTest {
     @DisplayName("Update book by invalid id")
     public void update_InvalidIdAndRequestDto_ThrowException() throws Exception {
         Long id = 100L;
-        CreateBookRequestDto requestDto = new CreateBookRequestDto()
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE)
-                .setCategories(new HashSet<>());
+        CreateBookRequestDto requestDto = getBookRequestDto();
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
         Exception exception = assertThrows(ServletException.class,
@@ -383,5 +350,27 @@ class BookControllerTest {
         BookDto[] booksAuthor = objectMapper
                 .readValue(resultAuthor.getResponse().getContentAsByteArray(), BookDto[].class);
         Assertions.assertEquals(0, booksAuthor.length);
+    }
+
+    private BookDto getBookDto() {
+        return new BookDto()
+                .setTitle(TITLE)
+                .setAuthor(AUTHOR)
+                .setIsbn(ISBN)
+                .setPrice(PRICE)
+                .setDescription(DESCRIPTION)
+                .setCoverImage(COVER_IMAGE)
+                .setCategoriesId(new HashSet<>());
+    }
+
+    private CreateBookRequestDto getBookRequestDto() {
+        return new CreateBookRequestDto()
+                .setTitle(TITLE)
+                .setAuthor(AUTHOR)
+                .setIsbn(ISBN)
+                .setPrice(PRICE)
+                .setDescription(DESCRIPTION)
+                .setCoverImage(COVER_IMAGE)
+                .setCategories(new HashSet<>());
     }
 }

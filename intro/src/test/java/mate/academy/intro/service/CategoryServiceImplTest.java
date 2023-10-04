@@ -40,14 +40,10 @@ class CategoryServiceImplTest {
     @Test
     @DisplayName("Find all categories, db is not empty")
     public void findAll_ValidPageable_ReturnListCategories() {
-        Category category = new Category()
-                .setId(ID)
-                .setName(NAME)
-                .setDescription(DESCRIPTION);
-        CategoryDto categoryDto = new CategoryDto()
-                .setId(ID)
-                .setName(NAME)
-                .setDescription(DESCRIPTION);
+        Category category = getCategory();
+        category.setId(ID);
+        CategoryDto categoryDto = getCategoryDto();
+        categoryDto.setId(ID);
         Pageable pageable = PageRequest.of(0, 10);
         List<Category> categories = List.of(category);
         Page<Category> categoryPage = new PageImpl<>(categories, pageable, categories.size());
@@ -76,14 +72,10 @@ class CategoryServiceImplTest {
     @Test
     @DisplayName("Get category by valid id")
     public void getById_ValidId_ReturnDto() {
-        Category category = new Category()
-                .setId(ID)
-                .setName(NAME)
-                .setDescription(DESCRIPTION);
-        CategoryDto expected = new CategoryDto()
-                .setId(ID)
-                .setName(NAME)
-                .setDescription(DESCRIPTION);
+        Category category = getCategory();
+        category.setId(ID);
+        CategoryDto expected = getCategoryDto();
+        expected.setId(ID);
 
         when(categoryRepository.findById(ID)).thenReturn(Optional.of(category));
         when(categoryMapper.toDto(category)).thenReturn(expected);
@@ -106,20 +98,12 @@ class CategoryServiceImplTest {
     @Test
     @DisplayName("Save category to db")
     public void save_ValidDto_ReturnDtoWithId() {
-        CategoryDto request = new CategoryDto()
-                .setName(NAME)
-                .setDescription(DESCRIPTION);
-        Category category = new Category()
-                .setName(NAME)
-                .setDescription(DESCRIPTION);
-        Category savedCategory = new Category()
-                .setId(ID)
-                .setName(NAME)
-                .setDescription(DESCRIPTION);
-        CategoryDto expected = new CategoryDto()
-                .setId(ID)
-                .setName(NAME)
-                .setDescription(DESCRIPTION);
+        CategoryDto request = getCategoryDto();
+        Category category = getCategory();
+        Category savedCategory = getCategory();
+        savedCategory.setId(ID);
+        CategoryDto expected = getCategoryDto();
+        expected.setId(ID);
 
         when(categoryMapper.toEntity(request)).thenReturn(category);
         when(categoryRepository.save(category)).thenReturn(savedCategory);
@@ -132,16 +116,10 @@ class CategoryServiceImplTest {
     @Test
     @DisplayName("Update category with valid id")
     public void update_ValidId_ReturnDto(){
-        CategoryDto request = new CategoryDto()
-                .setName(NAME)
-                .setDescription(DESCRIPTION);
-        Category category = new Category()
-                .setName(NAME)
-                .setDescription(DESCRIPTION);
-        CategoryDto expected = new CategoryDto()
-                .setId(ID)
-                .setName(NAME)
-                .setDescription(DESCRIPTION);
+        CategoryDto request = getCategoryDto();
+        Category category = getCategory();
+        CategoryDto expected = getCategoryDto();
+        expected.setId(ID);
 
         when(categoryRepository.findById(ID)).thenReturn(Optional.of(category));
         when(categoryMapper.toEntity(request)).thenReturn(category);
@@ -162,5 +140,17 @@ class CategoryServiceImplTest {
         String expected = "Category with id " + ID + " wasn't found";
         String actual = exception.getMessage();
         assertEquals(expected, actual);
+    }
+
+    private Category getCategory() {
+        return new Category()
+                .setName(NAME)
+                .setDescription(DESCRIPTION);
+    }
+
+    private CategoryDto getCategoryDto() {
+        return new CategoryDto()
+                .setName(NAME)
+                .setDescription(DESCRIPTION);
     }
 }

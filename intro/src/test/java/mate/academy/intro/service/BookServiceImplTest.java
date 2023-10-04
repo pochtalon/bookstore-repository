@@ -59,27 +59,9 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Save book to db without categories")
     public void save_WithoutCategories_ReturnValidDto() {
-        CreateBookRequestDto requestDto = new CreateBookRequestDto()
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
-        Book book = new Book()
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
-        BookDto expected = new BookDto()
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
+        CreateBookRequestDto requestDto = getBookRequestDto();
+        Book book = getBook();
+        BookDto expected = getBookDto();
 
         when(bookMapper.toModel(requestDto)).thenReturn(book);
         when(bookRepository.save(book)).thenReturn(book);
@@ -95,34 +77,16 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Save book to db with categories")
     public void save_WithCategories_ReturnValidDto() {
-        CreateBookRequestDto requestDto = new CreateBookRequestDto()
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE)
-                .setCategories(Set.of(1L));
+        CreateBookRequestDto requestDto = getBookRequestDto();
+        requestDto.setCategories(Set.of(1L));
         Category category = new Category()
                 .setId(1L)
                 .setName("Philosophy")
                 .setDescription("Systematic study of general and fundamental questions");
-        Book book = new Book()
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE)
-                .setCategories(new HashSet<>());
-        BookDto expected = new BookDto()
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE)
-                .setCategoriesId(Set.of(1L));
+        Book book = getBook();
+        book.setCategories(new HashSet<>());
+        BookDto expected = getBookDto();
+        expected.setCategoriesId(Set.of(1L));
 
         when(bookMapper.toModel(requestDto)).thenReturn(book);
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
@@ -136,22 +100,10 @@ class BookServiceImplTest {
     @Test
     @DisplayName("Save book to db with wrong categories, expect exception")
     public void save_WithWrongCategories_ThrowException() {
-        CreateBookRequestDto requestDto = new CreateBookRequestDto()
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE)
-                .setCategories(Set.of(1L));
-        Book book = new Book()
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE)
-                .setCategories(new HashSet<>());
+        CreateBookRequestDto requestDto = getBookRequestDto();
+        requestDto.setCategories(Set.of(1L));
+        Book book = getBook();
+        book.setCategories(new HashSet<>());
 
         when(bookMapper.toModel(requestDto)).thenReturn(book);
         when(categoryRepository.findById(1L)).thenReturn(Optional.empty());
@@ -167,22 +119,9 @@ class BookServiceImplTest {
     @DisplayName("Find book by valid id")
     public void findById_ValidBookId_ReturnValidDto() {
         Long id = 1L;
-        Book book = new Book()
-                .setId(id)
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
-        BookDto expected = new BookDto()
-                .setId(id)
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
+        Book book = getBook();
+        book.setId(id);
+        BookDto expected = getBookDto();
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(bookMapper.toDto(book)).thenReturn(expected);
@@ -207,22 +146,11 @@ class BookServiceImplTest {
     @DisplayName("Find all book, db is not empty")
     public void findAll_ValidPageable_ReturnAllBooks() {
         Long id = 1L;
-        Book book = new Book()
-                .setId(id)
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
-        BookDto bookDto = new BookDto()
-                .setId(id)
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
+        Book book = getBook();
+        book.setId(id);
+        BookDto bookDto = getBookDto();
+        bookDto.setId(id);
+
         Pageable pageable = PageRequest.of(0, 10);
         List<Book> books = List.of(book);
         Page<Book> bookPage = new PageImpl<>(books, pageable, books.size());
@@ -252,22 +180,11 @@ class BookServiceImplTest {
     @DisplayName("Search books with valid parameters")
     public void search_ValidParams_ReturnListDto() {
         Long id = 1L;
-        Book book = new Book()
-                .setId(id)
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
-        BookDto bookDto = new BookDto()
-                .setId(id)
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
+        Book book = getBook();
+        book.setId(id);
+        BookDto bookDto = getBookDto();
+        bookDto.setId(id);
+
         BookSearchParameters searchParameters = new BookSearchParameters()
                 .setAuthors(new String[]{AUTHOR})
                 .setTitles(new String[]{TITLE});
@@ -301,29 +218,11 @@ class BookServiceImplTest {
     @DisplayName("Update book with valid id")
     public void update_ValidId_ReturnValidDto() {
         Long id = 1L;
-        CreateBookRequestDto requestDto = new CreateBookRequestDto()
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
-        Book book = new Book()
-                .setId(id)
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
-        BookDto bookDto = new BookDto()
-                .setId(id)
-                .setTitle(TITLE)
-                .setAuthor(AUTHOR)
-                .setIsbn(ISBN)
-                .setPrice(PRICE)
-                .setDescription(DESCRIPTION)
-                .setCoverImage(COVER_IMAGE);
+        CreateBookRequestDto requestDto = getBookRequestDto();
+        Book book = getBook();
+        book.setId(id);
+        BookDto bookDto = getBookDto();
+        bookDto.setId(id);
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(new Book()));
         when(bookMapper.toModel(requestDto)).thenReturn(book);
@@ -349,69 +248,42 @@ class BookServiceImplTest {
         assertEquals(expected, actual);
     }
 
+    private Set<Category> getCategoriesList() {
+        return Set.of(
+                new Category()
+                        .setId(1L)
+                        .setName("Horror")
+                        .setDescription("Something scary"),
+                new Category()
+                        .setId(2L)
+                        .setName("Detective")
+                        .setDescription("Something enigmatic")
+        );
+    }
+
     @Test
     @DisplayName("Find all books by valid category id")
     public void findAllByCategoryId_ValidId_ReturnListDto() {
         Long horrorCategoryId = 1L;
         Long detectiveCategoryId = 2L;
-        Category horror = new Category()
-                .setId(horrorCategoryId)
-                .setName("Horror")
-                .setDescription("Something scary");
-        Category detective = new Category()
-                .setId(detectiveCategoryId)
-                .setName("Detective")
-                .setDescription("Something enigmatic");
-        Book cthulhu = new Book()
-                .setId(1L)
-                .setTitle("Call of Cthulhu")
-                .setAuthor("Howard Lovecraft")
-                .setIsbn("978-966-2355-82-6")
-                .setPrice(BigDecimal.valueOf(192.8))
-                .setDescription("Book about Cthulhu")
-                .setCoverImage("Cthulhu_cover")
-                .setCategories(Set.of(horror));
-        Book blackCat = new Book()
-                .setId(2L)
-                .setTitle("The Black Cat")
-                .setAuthor("Edgar Poe")
-                .setIsbn("978-0-8154-1038-6")
-                .setPrice(BigDecimal.valueOf(184.3))
-                .setDescription("Scary black cat")
-                .setCoverImage("Cat_cover")
-                .setCategories(Set.of(horror, detective));
-        BookDtoWithoutCategoriesIds cthulhuDto = new BookDtoWithoutCategoriesIds()
-                .setId(1L)
-                .setTitle("Call of Cthulhu")
-                .setAuthor("Howard Lovecraft")
-                .setIsbn("978-966-2355-82-6")
-                .setPrice(BigDecimal.valueOf(192.8))
-                .setDescription("Book about Cthulhu")
-                .setCoverImage("Cthulhu_cover");
-        BookDtoWithoutCategoriesIds blackCatDto = new BookDtoWithoutCategoriesIds()
-                .setId(2L)
-                .setTitle("The Black Cat")
-                .setAuthor("Edgar Poe")
-                .setIsbn("978-0-8154-1038-6")
-                .setPrice(BigDecimal.valueOf(184.3))
-                .setDescription("Scary black cat")
-                .setCoverImage("Cat_cover");
+        List<Book> bookList = getBookList();
+        List<BookDtoWithoutCategoriesIds> dtoWithoutCatList = getBookDtoWithoutCatList();
 
-        when(bookRepository.getAllByCategoriesId(horrorCategoryId)).thenReturn(List.of(cthulhu, blackCat));
-        when(bookMapper.toDtoWithoutCategories(cthulhu)).thenReturn(cthulhuDto);
-        when(bookMapper.toDtoWithoutCategories(blackCat)).thenReturn(blackCatDto);
+        when(bookRepository.getAllByCategoriesId(horrorCategoryId)).thenReturn(bookList);
+        when(bookMapper.toDtoWithoutCategories(bookList.get(0))).thenReturn(dtoWithoutCatList.get(0));
+        when(bookMapper.toDtoWithoutCategories(bookList.get(1))).thenReturn(dtoWithoutCatList.get(1));
 
         List<BookDtoWithoutCategoriesIds> byHorrorId = bookService.findAllByCategoryId(horrorCategoryId);
         assertThat(byHorrorId).hasSize(2);
-        assertEquals(cthulhuDto, byHorrorId.get(0));
-        assertEquals(blackCatDto, byHorrorId.get(1));
+        assertEquals(dtoWithoutCatList.get(0), byHorrorId.get(0));
+        assertEquals(dtoWithoutCatList.get(1), byHorrorId.get(1));
 
-        when(bookRepository.getAllByCategoriesId(detectiveCategoryId)).thenReturn(List.of(blackCat));
-        when(bookMapper.toDtoWithoutCategories(blackCat)).thenReturn(blackCatDto);
+        when(bookRepository.getAllByCategoriesId(detectiveCategoryId)).thenReturn(List.of(bookList.get(1)));
+        when(bookMapper.toDtoWithoutCategories(bookList.get(1))).thenReturn(dtoWithoutCatList.get(1));
 
         List<BookDtoWithoutCategoriesIds> byDetectiveId = bookService.findAllByCategoryId(detectiveCategoryId);
         assertThat(byDetectiveId).hasSize(1);
-        assertEquals(blackCatDto, byDetectiveId.get(0));
+        assertEquals(dtoWithoutCatList.get(1), byDetectiveId.get(0));
     }
 
     @Test
@@ -422,4 +294,80 @@ class BookServiceImplTest {
         List<BookDtoWithoutCategoriesIds> byCategoryId = bookService.findAllByCategoryId(100L);
         assertThat(byCategoryId).hasSize(0);
     }
+
+    private CreateBookRequestDto getBookRequestDto() {
+        return new CreateBookRequestDto()
+                .setTitle(TITLE)
+                .setAuthor(AUTHOR)
+                .setIsbn(ISBN)
+                .setPrice(PRICE)
+                .setDescription(DESCRIPTION)
+                .setCoverImage(COVER_IMAGE);
+    }
+
+    private Book getBook() {
+        return new Book()
+                .setTitle(TITLE)
+                .setAuthor(AUTHOR)
+                .setIsbn(ISBN)
+                .setPrice(PRICE)
+                .setDescription(DESCRIPTION)
+                .setCoverImage(COVER_IMAGE);
+    }
+
+    private BookDto getBookDto() {
+        return new BookDto()
+                .setTitle(TITLE)
+                .setAuthor(AUTHOR)
+                .setIsbn(ISBN)
+                .setPrice(PRICE)
+                .setDescription(DESCRIPTION)
+                .setCoverImage(COVER_IMAGE);
+    }
+
+    private List<Book> getBookList() {
+        Set<Category> catList = getCategoriesList();
+        return List.of(
+                new Book()
+                        .setId(1L)
+                        .setTitle("Call of Cthulhu")
+                        .setAuthor("Howard Lovecraft")
+                        .setIsbn("978-966-2355-82-6")
+                        .setPrice(BigDecimal.valueOf(192.8))
+                        .setDescription("Book about Cthulhu")
+                        .setCoverImage("Cthulhu_cover")
+                        .setCategories(Set.of(catList.stream().findFirst().get())),
+                new Book()
+                        .setId(2L)
+                        .setTitle("The Black Cat")
+                        .setAuthor("Edgar Poe")
+                        .setIsbn("978-0-8154-1038-6")
+                        .setPrice(BigDecimal.valueOf(184.3))
+                        .setDescription("Scary black cat")
+                        .setCoverImage("Cat_cover")
+                        .setCategories(catList)
+        );
+    }
+
+    private List<BookDtoWithoutCategoriesIds> getBookDtoWithoutCatList() {
+        return List.of(
+                new BookDtoWithoutCategoriesIds()
+                        .setId(1L)
+                        .setTitle("Call of Cthulhu")
+                        .setAuthor("Howard Lovecraft")
+                        .setIsbn("978-966-2355-82-6")
+                        .setPrice(BigDecimal.valueOf(192.8))
+                        .setDescription("Book about Cthulhu")
+                        .setCoverImage("Cthulhu_cover"),
+                new BookDtoWithoutCategoriesIds()
+                        .setId(2L)
+                        .setTitle("The Black Cat")
+                        .setAuthor("Edgar Poe")
+                        .setIsbn("978-0-8154-1038-6")
+                        .setPrice(BigDecimal.valueOf(184.3))
+                        .setDescription("Scary black cat")
+                        .setCoverImage("Cat_cover")
+        );
+    }
+
 }
