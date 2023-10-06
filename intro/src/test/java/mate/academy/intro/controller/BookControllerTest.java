@@ -114,7 +114,7 @@ class BookControllerTest {
             connection.setAutoCommit(true);
             ScriptUtils.executeSqlScript(
                     connection,
-                    new ClassPathResource("database/books/remove-all-books.sql")
+                    new ClassPathResource("database/books/clear-books-table.sql")
             );
         }
     }
