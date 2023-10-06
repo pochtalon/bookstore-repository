@@ -2,8 +2,6 @@ package mate.academy.intro.service;
 
 import mate.academy.intro.mapper.CartItemMapper;
 import mate.academy.intro.mapper.ShoppingCartMapper;
-import mate.academy.intro.model.ShoppingCart;
-import mate.academy.intro.model.User;
 import mate.academy.intro.repository.book.BookRepository;
 import mate.academy.intro.repository.cartitem.CartItemRepository;
 import mate.academy.intro.repository.shoppingcart.ShoppingCartRepository;
@@ -14,12 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.HashSet;
-import java.util.Optional;
-
-import static org.mockito.Mockito.when;
-import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class CartServiceImplTest {

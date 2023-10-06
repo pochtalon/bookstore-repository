@@ -220,42 +220,39 @@ class ShoppingCartControllerTest {
     @DisplayName("Update item quantity it the cart")
     public void updateBookQuantity_IdAndQuantity_ReturnCartItemDto() throws Exception {
         String token = "Bearer " + jwtUtil.generateToken(EMAIL);
-        Long id1 = 1L;
-        Long id2 = 2L;
-        Long id3 = 3L;
-        int quantity1 = 10;
-        int quantity2 = 20;
-        int quantity3 = 30;
-        String jsonRequest1 = objectMapper.writeValueAsString(new CartItemQuantityUpdateRequestDto().setQuantity(quantity1));
-        String jsonRequest2 = objectMapper.writeValueAsString(new CartItemQuantityUpdateRequestDto().setQuantity(quantity2));
-        String jsonRequest3 = objectMapper.writeValueAsString(new CartItemQuantityUpdateRequestDto().setQuantity(quantity3));
+        int expect1 = 10;
+        int expect2 = 20;
+        int expect3 = 30;
+        String jsonRequest1 = objectMapper.writeValueAsString(new CartItemQuantityUpdateRequestDto().setQuantity(expect1));
+        String jsonRequest2 = objectMapper.writeValueAsString(new CartItemQuantityUpdateRequestDto().setQuantity(expect2));
+        String jsonRequest3 = objectMapper.writeValueAsString(new CartItemQuantityUpdateRequestDto().setQuantity(expect3));
 
-        MvcResult result1 = mockMvc.perform(put("/cart/cart-items/" + id1)
+        MvcResult result1 = mockMvc.perform(put("/cart/cart-items/" + 1L)
                         .content(jsonRequest1)
                         .header(HttpHeaders.AUTHORIZATION, token)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         CartItemDto actual1 = objectMapper.readValue(result1.getResponse().getContentAsByteArray(), CartItemDto.class);
-        Assertions.assertEquals(quantity1, actual1.getQuantity());
+        Assertions.assertEquals(expect1, actual1.getQuantity());
 
-        MvcResult result2 = mockMvc.perform(put("/cart/cart-items/" + id2)
+        MvcResult result2 = mockMvc.perform(put("/cart/cart-items/" + 2L)
                         .content(jsonRequest2)
                         .header(HttpHeaders.AUTHORIZATION, token)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         CartItemDto actual2 = objectMapper.readValue(result2.getResponse().getContentAsByteArray(), CartItemDto.class);
-        Assertions.assertEquals(quantity2, actual2.getQuantity());
+        Assertions.assertEquals(expect2, actual2.getQuantity());
 
-        MvcResult result3 = mockMvc.perform(put("/cart/cart-items/" + id3)
+        MvcResult result3 = mockMvc.perform(put("/cart/cart-items/" + 3L)
                         .content(jsonRequest3)
                         .header(HttpHeaders.AUTHORIZATION, token)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         CartItemDto actual3 = objectMapper.readValue(result3.getResponse().getContentAsByteArray(), CartItemDto.class);
-        Assertions.assertEquals(quantity3, actual3.getQuantity());
+        Assertions.assertEquals(expect3, actual3.getQuantity());
     }
 
     @Test
