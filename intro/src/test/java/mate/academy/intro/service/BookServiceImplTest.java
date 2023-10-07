@@ -248,19 +248,6 @@ class BookServiceImplTest {
         assertEquals(expected, actual);
     }
 
-    private Set<Category> getCategoriesList() {
-        return Set.of(
-                new Category()
-                        .setId(1L)
-                        .setName("Horror")
-                        .setDescription("Something scary"),
-                new Category()
-                        .setId(2L)
-                        .setName("Detective")
-                        .setDescription("Something enigmatic")
-        );
-    }
-
     @Test
     @DisplayName("Find all books by valid category id")
     public void findAllByCategoryId_ValidId_ReturnListDto() {
@@ -293,6 +280,19 @@ class BookServiceImplTest {
 
         List<BookDtoWithoutCategoriesIds> byCategoryId = bookService.findAllByCategoryId(100L);
         assertThat(byCategoryId).hasSize(0);
+    }
+
+    private Set<Category> getCategoriesList() {
+        return Set.of(
+                new Category()
+                        .setId(1L)
+                        .setName("Horror")
+                        .setDescription("Something scary"),
+                new Category()
+                        .setId(2L)
+                        .setName("Detective")
+                        .setDescription("Something enigmatic")
+        );
     }
 
     private CreateBookRequestDto getBookRequestDto() {

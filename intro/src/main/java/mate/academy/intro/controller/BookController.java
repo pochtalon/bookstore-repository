@@ -80,7 +80,6 @@ public class BookController {
     public List<BookDto> search(Authentication authentication,
                                 @RequestParam(required = false) List<String> title,
                                 @RequestParam(required = false) List<String> author) {
-        System.out.println(title + " " + author);
         List<String> titles = title != null ? title : Collections.emptyList();
         List<String> authors = author != null ? author : Collections.emptyList();
         return bookService.search(titles, authors);

@@ -25,14 +25,14 @@ public class CartServiceImpl implements CartService {
     private final BookRepository bookRepository;
 
     @Override
-    public ShoppingCartResponseDto getByUserId(Long id) {
-        ShoppingCart shoppingCart = findCartByUserId(id);
+    public ShoppingCartResponseDto getByUserId(Long userId) {
+        ShoppingCart shoppingCart = findCartByUserId(userId);
         return shoppingCartMapper.toDto(shoppingCart);
     }
 
     @Override
-    public CartItemDto addBookToCart(Long id, CartItemAddRequestDto requestDto) {
-        ShoppingCart shoppingCart = findCartByUserId(id);
+    public CartItemDto addBookToCart(Long userId, CartItemAddRequestDto requestDto) {
+        ShoppingCart shoppingCart = findCartByUserId(userId);
         CartItem cartItem = cartItemMapper.toModel(requestDto);
         cartItem.setShoppingCart(shoppingCart);
         cartItem.setBook(bookRepository.findById(requestDto.getBookId()).orElseThrow(() ->
@@ -42,16 +42,16 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartItemDto updateBookQuantity(Long id, Long cartItemId, int quantity) {
-        CartItem cartItem = getItemFromCart(id, cartItemId);
+    public CartItemDto updateBookQuantity(Long userId, Long cartItemId, int quantity) {
+        CartItem cartItem = getItemFromCart(userId, cartItemId);
         cartItem.setQuantity(quantity);
         cartItemRepository.save(cartItem);
         return cartItemMapper.toDto(cartItem);
     }
 
     @Override
-    public void deleteItem(Long id, Long cartItemId) {
-        CartItem cartItem = getItemFromCart(id, cartItemId);
+    public void deleteItem(Long userId, Long cartItemId) {
+        CartItem cartItem = getItemFromCart(userId, cartItemId);
         cartItemRepository.delete(cartItem);
     }
 
