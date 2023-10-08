@@ -7,7 +7,6 @@ import mate.academy.intro.dto.order.AddressRequestDto;
 import mate.academy.intro.dto.order.OrderDto;
 import mate.academy.intro.dto.order.OrderItemDto;
 import mate.academy.intro.dto.order.StatusRequestDto;
-import mate.academy.intro.exception.EntityNotFoundException;
 import mate.academy.intro.model.Order;
 import mate.academy.intro.security.JwtUtil;
 import org.junit.jupiter.api.AfterAll;
@@ -44,7 +43,6 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -57,21 +55,9 @@ class OrderControllerTest {
     private static final String EMAIL = "handsome_bob@mail.com";
     private static final String ADMIN_EMAIL = "admin@mail.com";
     private static final List<OrderItemDto> ORDER_ITEM_DTOS = new ArrayList<>();
-
-    private static void initOrderItemDtoList() {
-        ORDER_ITEM_DTOS.add(new OrderItemDto()
-                .setId(1L)
-                .setBookId(1L)
-                .setQuantity(4));
-        ORDER_ITEM_DTOS.add(new OrderItemDto()
-                .setId(2L)
-                .setBookId(2L)
-                .setQuantity(5));
-        ORDER_ITEM_DTOS.add(new OrderItemDto()
-                .setId(3L)
-                .setBookId(3L)
-                .setQuantity(6));
-    }
+    private static final List<OrderDto> ORDER_DTO_LIST = new ArrayList<>();
+    private static final Long ORDER_ID = 1L;
+    private static final Long ITEM_ID = 2L;
 
     @BeforeAll
     static void beforeAll(
@@ -103,6 +89,7 @@ class OrderControllerTest {
             );
         }
         initOrderItemDtoList();
+        initOrderDtoList();
     }
 
     @AfterAll
@@ -172,47 +159,16 @@ class OrderControllerTest {
     @Test
     @DisplayName("Get all orders for user")
     public void getAllOrders_Token_ListOrders() throws Exception {
-        OrderDto expected1 = new OrderDto()
-                .setId(1L)
-                .setUserId(1L)
-                .setOrderItems(Set.of(
-                        new OrderItemDto()
-                                .setId(1L)
-                                .setBookId(1L)
-                                .setQuantity(1),
-                        new OrderItemDto()
-                                .setId(2L)
-                                .setBookId(2L)
-                                .setQuantity(2)))
-                .setOrderDate(LocalDateTime.of(2020, 8, 7, 19, 34, 20))
-                .setTotal(BigDecimal.valueOf(561.8))
-                .setStatus("COMPLETED");
-        OrderDto expected2 = new OrderDto()
-                .setId(2L)
-                .setUserId(1L)
-                .setOrderItems(Set.of(
-                        new OrderItemDto()
-                                .setId(3L)
-                                .setBookId(2L)
-                                .setQuantity(3),
-                        new OrderItemDto()
-                                .setId(4L)
-                                .setBookId(3L)
-                                .setQuantity(4)))
-                .setOrderDate(LocalDateTime.of(2021, 6, 7, 19, 34, 20))
-                .setTotal(BigDecimal.valueOf(1345.5))
-                .setStatus("COMPLETED");
-
         MvcResult result = mockMvc.perform(get("/orders")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer "
                                 + jwtUtil.generateToken(EMAIL))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        OrderDto[] actual = objectMapper.readValue(result.getResponse().getContentAsString(), OrderDto[].class);
-        Assertions.assertEquals(2, actual.length);
-        Assertions.assertEquals(expected1, actual[0]);
-        Assertions.assertEquals(expected2, actual[1]);
+
+        List<OrderDto> actual = List.of(objectMapper.readValue(result.getResponse().getContentAsString(), OrderDto[].class));
+        Assertions.assertEquals(2, actual.size());
+        Assertions.assertEquals(ORDER_DTO_LIST, actual);
     }
 
     @Test
@@ -226,13 +182,12 @@ class OrderControllerTest {
     )
     @DisplayName("Update order status")
     public void updateOrderStatus_OrderIdAndStatusRequest_ReturnOrderDto() throws Exception {
-        Long orderId = 1L;
         StatusRequestDto requestDto = new StatusRequestDto()
                 .setStatus(Order.Status.DELIVERED);
         String expected = "DELIVERED";
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
-        MvcResult result = mockMvc.perform(patch("/orders/" + orderId)
+        MvcResult result = mockMvc.perform(patch("/orders/" + ORDER_ID)
                         .content(jsonRequest)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer "
                                 + jwtUtil.generateToken(ADMIN_EMAIL))
@@ -241,58 +196,39 @@ class OrderControllerTest {
                 .andReturn();
 
         OrderDto actual = objectMapper.readValue(result.getResponse().getContentAsString(), OrderDto.class);
-        Assertions.assertEquals(expected, actual.getStatus());
+        assertEquals(expected, actual.getStatus());
     }
 
     @Test
     @DisplayName("Get all items from order ")
     public void getAllItemsFromOrder_OrderId_ReturnOrderItemDtosList() throws Exception {
-        Long orderId = 1l;
-        List<OrderItemDto> expected = List.of(
-                        new OrderItemDto()
-                                .setId(1L)
-                                .setBookId(1L)
-                                .setQuantity(1),
-                        new OrderItemDto()
-                                .setId(2L)
-                                .setBookId(2L)
-                                .setQuantity(2));
+        Set<OrderItemDto> expected = ORDER_DTO_LIST.get(0).getOrderItems();
 
-        MvcResult resultUser = mockMvc.perform(get("/orders/" + orderId + "/items")
+        MvcResult resultUser = mockMvc.perform(get("/orders/" + ORDER_ID + "/items")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer "
                                 + jwtUtil.generateToken(EMAIL))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        List<OrderItemDto> actualUser = List.of(objectMapper.readValue(resultUser.getResponse().getContentAsString(), OrderItemDto[].class));
-        Assertions.assertEquals(expected, actualUser);
+        Set<OrderItemDto> actualUser = Set.of(objectMapper.readValue(resultUser.getResponse().getContentAsString(), OrderItemDto[].class));
+        assertEquals(expected, actualUser);
 
-        MvcResult resultAdmin = mockMvc.perform(get("/orders/" + orderId + "/items")
+        MvcResult resultAdmin = mockMvc.perform(get("/orders/" + ORDER_ID + "/items")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer "
                                 + jwtUtil.generateToken(ADMIN_EMAIL))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-        List<OrderItemDto> actualAdmin = List.of(objectMapper.readValue(resultUser.getResponse().getContentAsString(), OrderItemDto[].class));
-        Assertions.assertEquals(expected, actualAdmin);
+        Set<OrderItemDto> actualAdmin = Set.of(objectMapper.readValue(resultAdmin.getResponse().getContentAsString(), OrderItemDto[].class));
+        assertEquals(expected, actualAdmin);
     }
 
     @Test
 
-    @Sql(
-            scripts = "classpath:database/users/add-user-for-order-test.sql",
-            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
-    )
-    @Sql(
-            scripts = "classpath:database/users/delete-user-for-order-test.sql",
-            executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
-    )
     @DisplayName("Get all items from order of another user")
     public void getAllItemsFromOrder_OrderIdNotBelongsToUser_ThrowException() throws Exception {
-        Long orderId = 1l;
-
         Exception exception = assertThrows(ServletException.class,
-                () -> mockMvc.perform(get("/orders/" + orderId + "/items")
+                () -> mockMvc.perform(get("/orders/" + ORDER_ID + "/items")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer "
                                 + jwtUtil.generateToken("some_user@mail.com"))
                         .contentType(MediaType.APPLICATION_JSON))
@@ -300,7 +236,7 @@ class OrderControllerTest {
                 .andReturn());
 
         String expected = "Request processing failed: mate.academy.intro.exception.EntityNotFoundException: "
-                + "Can't find order with id " + orderId;
+                + "Can't find order with id " + ORDER_ID;
         String actual = exception.getMessage();
         assertEquals(expected, actual);
     }
@@ -308,29 +244,109 @@ class OrderControllerTest {
     @Test
     @DisplayName("Get item from order")
     public void getItemFromOrder_OrderIdAndId_ReturnOrderItemDto() throws Exception {
-        Long orderId = 1l;
-        Long itemId = 2L;
         OrderItemDto expected = new OrderItemDto()
                 .setId(2L)
                 .setBookId(2L)
                 .setQuantity(2);
 
-        MvcResult resultUser = mockMvc.perform(get("/orders/" + orderId + "/items/" + itemId)
+        MvcResult resultUser = mockMvc.perform(get("/orders/" + ORDER_ID + "/items/" + ITEM_ID)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer "
                                 + jwtUtil.generateToken(EMAIL))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         OrderItemDto actualUser = objectMapper.readValue(resultUser.getResponse().getContentAsString(), OrderItemDto.class);
-        Assertions.assertEquals(expected, actualUser);
+        assertEquals(expected, actualUser);
 
-        MvcResult resultAdmin = mockMvc.perform(get("/orders/" + orderId + "/items/" + itemId)
+        MvcResult resultAdmin = mockMvc.perform(get("/orders/" + ORDER_ID + "/items/" + ITEM_ID)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer "
                                 + jwtUtil.generateToken(ADMIN_EMAIL))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         OrderItemDto actualAdmin = objectMapper.readValue(resultAdmin.getResponse().getContentAsString(), OrderItemDto.class);
-        Assertions.assertEquals(expected, actualAdmin);
+        assertEquals(expected, actualAdmin);
+    }
+
+    @Test
+    @DisplayName("Get order item from order, not belong to user")
+    public void getItemFromOrder_OrderIdNotBelongsToUser_ThrowException() throws Exception {
+        Exception exception = assertThrows(ServletException.class,
+                () -> mockMvc.perform(get("/orders/" + ORDER_ID + "/items/" + ITEM_ID)
+                                .header(HttpHeaders.AUTHORIZATION, "Bearer "
+                                        + jwtUtil.generateToken("some_user@mail.com"))
+                                .contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andReturn());
+
+        String expected = "Request processing failed: mate.academy.intro.exception.EntityNotFoundException: "
+                + "Can't find order with id " + ORDER_ID;
+        String actual = exception.getMessage();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    @DisplayName("Get item from order, invalid item id")
+    public void getItemFromOrder_InvalidItemId_ThrowException() throws Exception {
+        Long itemId = 15L;
+        Exception exception = assertThrows(ServletException.class,
+                () -> mockMvc.perform(get("/orders/" + ORDER_ID + "/items/" + itemId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer "
+                                + jwtUtil.generateToken(EMAIL))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn());
+        String expected = "Request processing failed: mate.academy.intro.exception.EntityNotFoundException: "
+                + "Can't find order item with id " + itemId;
+        String actual = exception.getMessage();
+        assertEquals(expected, actual);
+    }
+
+    private static void initOrderItemDtoList() {
+        ORDER_ITEM_DTOS.add(new OrderItemDto()
+                .setId(1L)
+                .setBookId(1L)
+                .setQuantity(4));
+        ORDER_ITEM_DTOS.add(new OrderItemDto()
+                .setId(2L)
+                .setBookId(2L)
+                .setQuantity(5));
+        ORDER_ITEM_DTOS.add(new OrderItemDto()
+                .setId(3L)
+                .setBookId(3L)
+                .setQuantity(6));
+    }
+
+    private static void initOrderDtoList() {
+        ORDER_DTO_LIST.add(new OrderDto()
+                .setId(1L)
+                .setUserId(1L)
+                .setOrderItems(Set.of(
+                        new OrderItemDto()
+                                .setId(1L)
+                                .setBookId(1L)
+                                .setQuantity(1),
+                        new OrderItemDto()
+                                .setId(2L)
+                                .setBookId(2L)
+                                .setQuantity(2)))
+                .setOrderDate(LocalDateTime.of(2020, 8, 7, 19, 34, 20))
+                .setTotal(BigDecimal.valueOf(561.8))
+                .setStatus("COMPLETED"));
+        ORDER_DTO_LIST.add(new OrderDto()
+                .setId(2L)
+                .setUserId(1L)
+                .setOrderItems(Set.of(
+                        new OrderItemDto()
+                                .setId(3L)
+                                .setBookId(2L)
+                                .setQuantity(3),
+                        new OrderItemDto()
+                                .setId(4L)
+                                .setBookId(3L)
+                                .setQuantity(4)))
+                .setOrderDate(LocalDateTime.of(2021, 6, 7, 19, 34, 20))
+                .setTotal(BigDecimal.valueOf(1345.5))
+                .setStatus("COMPLETED"));
     }
 }
