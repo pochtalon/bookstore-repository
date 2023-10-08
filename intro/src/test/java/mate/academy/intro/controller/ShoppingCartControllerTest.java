@@ -47,20 +47,20 @@ class ShoppingCartControllerTest {
     @Autowired
     private JwtUtil jwtUtil;
     private static final String EMAIL = "handsome_bob@mail.com";
-    private static final List<CartItemDto> cartItemDtoList = new ArrayList<>();
+    private static final List<CartItemDto> CART_ITEM_DTOS = new ArrayList<>();
 
     private static void initCartItemDtoList() {
-        cartItemDtoList.add(new CartItemDto()
+        CART_ITEM_DTOS.add(new CartItemDto()
                 .setId(1L)
                 .setBookId(1L)
                 .setBookTitle("Call of Cthulhu")
                 .setQuantity(4));
-        cartItemDtoList.add(new CartItemDto()
+        CART_ITEM_DTOS.add(new CartItemDto()
                 .setId(2L)
                 .setBookId(2L)
                 .setBookTitle("The Raven")
                 .setQuantity(5));
-        cartItemDtoList.add(new CartItemDto()
+        CART_ITEM_DTOS.add(new CartItemDto()
                 .setId(3L)
                 .setBookId(3L)
                 .setBookTitle("The Name of the Rose")
@@ -85,7 +85,7 @@ class ShoppingCartControllerTest {
             );
             ScriptUtils.executeSqlScript(
                     connection,
-                    new ClassPathResource("database/users/add-user.sql")
+                    new ClassPathResource("database/users/add-default-user-and-admin.sql")
             );
             ScriptUtils.executeSqlScript(
                     connection,
@@ -131,7 +131,7 @@ class ShoppingCartControllerTest {
         ShoppingCartResponseDto expected = new ShoppingCartResponseDto()
                 .setId(1L)
                 .setUserId(1L)
-                .setCartItems(new HashSet<>(cartItemDtoList));
+                .setCartItems(new HashSet<>(CART_ITEM_DTOS));
         ShoppingCartResponseDto actual = objectMapper.readValue(result.getResponse().getContentAsByteArray(), ShoppingCartResponseDto.class);
         Assertions.assertNotNull(actual);
         Assertions.assertEquals(expected, actual);

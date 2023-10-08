@@ -74,7 +74,7 @@ class AuthenticationControllerTest {
 
     @Test
     @Sql(
-            scripts = "classpath:database/users/add-user.sql",
+            scripts = "classpath:database/users/add-default-user-and-admin.sql",
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
     )
     @DisplayName("Login valid user")

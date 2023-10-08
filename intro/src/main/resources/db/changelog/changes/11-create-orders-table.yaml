@@ -28,7 +28,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: total
-                  type: decimal
+                  type: decimal(7,1)
                   constraints:
                     nullable: false
               - column:
