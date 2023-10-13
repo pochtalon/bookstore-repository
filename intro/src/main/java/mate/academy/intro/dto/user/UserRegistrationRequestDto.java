@@ -3,8 +3,10 @@ package mate.academy.intro.dto.user;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 public class UserRegistrationRequestDto {
     @NotBlank
     @Size(min = 4, max = 50)

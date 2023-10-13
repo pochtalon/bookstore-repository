@@ -60,8 +60,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto updateOrderStatus(Long id, StatusRequestDto statusRequest) {
-        Order order = getOrderById(id);
+    public OrderDto updateOrderStatus(Long orderId, StatusRequestDto statusRequest) {
+        Order order = getOrderById(orderId);
         order.setStatus(statusRequest.getStatus());
         return orderMapper.toDto(orderRepository.save(order));
     }

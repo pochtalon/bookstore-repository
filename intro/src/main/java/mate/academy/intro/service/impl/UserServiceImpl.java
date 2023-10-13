@@ -29,7 +29,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto register(UserRegistrationRequestDto request)
             throws RegistrationException {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()
+                || !request.getPassword().equals(request.getPasswordRepeat())) {
             throw new RegistrationException("Unable to complete registration");
         }
         User user = userMapper.toModel(request);

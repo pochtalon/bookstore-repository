@@ -5,11 +5,11 @@ import mate.academy.intro.dto.cart.CartItemDto;
 import mate.academy.intro.dto.cart.ShoppingCartResponseDto;
 
 public interface CartService {
-    ShoppingCartResponseDto getByUserId(Long id);
+    ShoppingCartResponseDto getByUserId(Long userId);
 
-    CartItemDto addBookToCart(Long id, CartItemAddRequestDto requestDto);
+    CartItemDto addBookToCart(Long userId, CartItemAddRequestDto requestDto);
 
-    CartItemDto updateBookQuantity(Long id, Long cartItemId, int quantity);
+    CartItemDto updateBookQuantity(Long userId, Long cartItemId, int quantity);
 
-    void deleteItem(Long id, Long cartItemId);
+    void deleteItem(Long userId, Long cartItemId);
 }
