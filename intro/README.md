@@ -2,9 +2,11 @@
 
 ## 📜 Project description:
 
-The Forbidden Library is a web stateless application designed to model the functionality of an online bookstore.
-The platform allows: to register new users; add books, divided by categories, to store; selected books by parameters; add books to the cart and make the order.
-All features are accessed depending on user's role.
+Here you are in The Forbidden Library! Doesn't matter how did you find the way here, you are one of us now. <br />
+Our order was founded to preserve knowledge and sharing it among the worthy. Role-based access control allows you get what you want and avoid meeting random people here. 
+The literature is sorted by various categories and our efforts are aimed at simplify book searching and exploring. 
+Keep improving your skills and knowledge for gaining higher access, and you will get advanced management tools for administrative tasks. <br />
+Just enjoy...
 
 #### The app follows a three-tier architecture by separating presentation, application, and data tiers:
 
@@ -12,13 +14,17 @@ All features are accessed depending on user's role.
 * Service: contains the core application logic;
 * Repository: interacts with the underlying data storage.
 
+## 🔗 Entity-Relationship Diagram
+
+![](images/er_diagram.jpg)
+
 ## 🛠️ Project Functionality:
 
 User can have USER or ADMIN roles. USER role is assigned automatically to each newly registered user. One default user with role ADMIN is already added to database. <br />
 Access types: 🟢 - unregistered user 🟡 - ADMIN role 🔴 - USER role 🟠 - ADMIN or USER roles
 * AuthenticationController:
     * 🟢 login user;
-    * 🟢 register user;
+    * 🟢 register new user;
 * CategoryController:
   * 🟡 create a new category;
   * 🟠 get a list of all available categories;
@@ -81,7 +87,7 @@ Access types: 🟢 - unregistered user 🟡 - ADMIN role 🔴 - USER role 🟠 -
 #### [intro/src/test/java/mate/academy/intro](src/test/java/mate/academy/intro)
 * [config](src/test/java/mate/academy/intro/config) - configuration class for test user
 * [controller](src/test/java/mate/academy/intro/controller) - test classes for controllers
-* [servise](src/test/java/mate/academy/intro/service) - test classes for services
+* [service](src/test/java/mate/academy/intro/service) - test classes for services
 
 #### [intro/src/test/resources](src/test/resources)
 * [database](src/test/resources/database) - folder with SQL scripts for testing controllers
