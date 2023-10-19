@@ -39,9 +39,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto createOrder(User user, String shippingAddress) {
+        Set<CartItem> cartItems = getCartItemsFromCart(user.getId());
         Order order = initOrder(user, shippingAddress);
         Order savedOrder = orderRepository.save(order);
-        savedOrder.setOrderItems(getOrderItemsFromCart(user.getId(), order));
+        savedOrder.setOrderItems(getOrderItemsFromCartItems(cartItems, order));
         BigDecimal total = BigDecimal.ZERO;
         for (OrderItem orderItem : savedOrder.getOrderItems()) {
             total = total.add(orderItem.getPrice());
@@ -105,15 +106,22 @@ public class OrderServiceImpl implements OrderService {
         return order;
     }
 
-    private Set<OrderItem> getOrderItemsFromCart(Long id, Order order) {
-        ShoppingCart shoppingCart = getShoppingCartById(id);
-        Set<OrderItem> orderItems = shoppingCart.getCartItems().stream()
+    private Set<OrderItem> getOrderItemsFromCartItems(Set<CartItem> cartItems, Order order) {
+        return cartItems.stream()
                 .map(this::convertToOrderItem)
                 .peek(orderItem -> orderItem.setOrder(order))
                 .map(orderItemRepository::save)
                 .collect(Collectors.toSet());
+    }
+
+    private Set<CartItem> getCartItemsFromCart(Long id) {
+        ShoppingCart shoppingCart = getShoppingCartById(id);
+        Set<CartItem> cartItems = shoppingCart.getCartItems();
+        if (cartItems.size() == 0) {
+            throw new RuntimeException("Cart is empty");
+        }
         cartItemRepository.deleteAll(shoppingCart.getCartItems());
-        return orderItems;
+        return cartItems;
     }
 
     private Order getOrderById(Long id) {

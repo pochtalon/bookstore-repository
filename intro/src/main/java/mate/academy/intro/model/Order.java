@@ -44,7 +44,7 @@ public class Order {
     private LocalDateTime orderDate;
     @Column(name = "shipping_address", nullable = false)
     private String shippingAddress;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<OrderItem> orderItems;

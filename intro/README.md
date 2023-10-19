@@ -99,9 +99,12 @@ Access types: 🟢 - unregistered user 🟡 - ADMIN role 🔴 - USER role 🟠 -
 * [Dockerfile](Dockerfile) - configuration for docker
 * [docker-compose.yml](docker-compose.yaml) - this file is used with Docker Compose to define multi-container applications. It specifies the services, networks, and volumes required for running the application, along with any environment variables.
 
-## How to run the project locally:
+## 🕹️ How to run the project locally:
 * Ensure you have Docker installed on your system.
 * Configure your database settings in the .env file.
 * Open a terminal and navigate to the root directory of your project.
 * Run the application using Docker Compose: docker-compose up
 * Explore the endpoints using tools like Postman or Swagger
+
+## 🎞️ Brief demonstration
+[Short video](images/brief_demo.mp4)
